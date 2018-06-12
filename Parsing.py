@@ -1,7 +1,7 @@
 import json
 from pprint import pprint
 
-nodes, children = dict(), []
+nodes = dict()
 
 def depth(data):
         
@@ -33,32 +33,27 @@ def getAllChildren(data, node, allChildren):
         currLevel = nodes[currVal]
 
         #still too high in the tree
-        if currLevel > maxLevel:
-            for kid in kids:
-                getAllChildren(kid, node, allChildren)
-
-        #if we're at the node we want to find the children of    
-        elif currLevel == maxLevel and currVal == node:
+        if currLevel > maxLevel or (currLevel == maxLevel and currVal == node):
             for kid in kids:
                 getAllChildren(kid, node, allChildren)
 
         #if the current node is one of the desired nodes children      
-        elif currLevel < maxLevel and kids != []:
-                if currVal not in allChildren:
-                    allChildren.append(currVal)
-                for kid in kids:
-                    getAllChildren(kid, node, allChildren)
-                    
-        #if we're at the bottom of the tree        
-        elif currLevel < maxLevel and kids == []:
+        elif currLevel < maxLevel:
             if currVal not in allChildren:
                 allChildren.append(currVal)
+            if kids != []:
+                for kid in kids:
+                    getAllChildren(kid, node, allChildren)
 
-with open("sample.json") as f:
+def generalize(data, node1, node2):
+
+    return True
+    
+
+with open("language.json") as f:
     data = json.load(f)
 
 allChildren = []
-getAllChildren(data, "*", allChildren)
+getAllChildren(data, "europe", allChildren)
 print(allChildren)
-#print(getAllChildren(data, "partial1"))
 
