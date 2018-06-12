@@ -23,24 +23,42 @@ def nodeDepths(data, currDepth):
             for child in currVal:
                 nodeDepths(child, currDepth - 1)
 
-##def getAllChildren(data, node):
-##    print(data["children"][1]["value"])
-##    #fix it so it only goes through children of data[node]
-##    for val in data:
-##        kids, currVal = data["children"], data[val]
-##        if val != "children" and currVal != [] and currVal not in children:
-##            children.append(currVal)
-##        else:
-##            for kid in kids:
-##                getAllChildren(kid, kid["value"])            
-##
-##    return children
+def getAllChildren(data, node, allChildren):
 
+    nodeDepths(data, depth(data))
+    maxLevel = nodes[node]
+
+    for val in data:
+        currVal, kids = data["value"], data["children"]
+        currLevel = nodes[currVal]
+
+        #still too high in the tree
+        if currLevel > maxLevel:
+            for kid in kids:
+                getAllChildren(kid, node, allChildren)
+
+        #if we're at the node we want to find the children of    
+        elif currLevel == maxLevel and currVal == node:
+            for kid in kids:
+                getAllChildren(kid, node, allChildren)
+
+        #if the current node is one of the desired nodes children      
+        elif currLevel < maxLevel and kids != []:
+                if currVal not in allChildren:
+                    allChildren.append(currVal)
+                for kid in kids:
+                    getAllChildren(kid, node, allChildren)
+                    
+        #if we're at the bottom of the tree        
+        elif currLevel < maxLevel and kids == []:
+            if currVal not in allChildren:
+                allChildren.append(currVal)
 
 with open("sample.json") as f:
     data = json.load(f)
 
-nodeDepths(data, depth(data))
-print(nodes)
+allChildren = []
+getAllChildren(data, "*", allChildren)
+print(allChildren)
 #print(getAllChildren(data, "partial1"))
 
