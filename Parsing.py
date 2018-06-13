@@ -6,7 +6,7 @@ nodes = dict()
 def depth(data):
         
     if 'children' in data:
-        #return 1 + max([0] + list(map(depth, data['children'])))
+        #https://stackoverflow.com/questions/29005959/depth-of-a-json-tree
         return 1 + max([-1] + list(map(depth, data['children'])))
     else:
         return 1
@@ -45,15 +45,26 @@ def getAllChildren(data, node, allChildren):
                 for kid in kids:
                     getAllChildren(kid, node, allChildren)
 
-def generalize(data, node1, node2):
+def getParent(data, node):
 
-    return True
+    nodeDepths(data, depth(data))
+    nodeLevel = nodes[node]
     
+    for val in nodes:
+        if nodes[val] == (nodeLevel + 1):
+            allChildren = []
+            getAllChildren(data, val, allChildren)
+            if node in allChildren:
+                return val
+        else: pass;
+    return node  
 
-with open("language.json") as f:
+with open("sample.json") as f:
     data = json.load(f)
 
-allChildren = []
-getAllChildren(data, "europe", allChildren)
-print(allChildren)
+print(getParent(data, "*"))
+
+##allChildren = []
+##getAllChildren(data, "europe", allChildren)
+##print(allChildren)
 
