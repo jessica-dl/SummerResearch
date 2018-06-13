@@ -59,12 +59,29 @@ def getParent(data, node):
         else: pass;
     return node  
 
+def generalize(data, node1, node2):
+
+    if node1 == node2:
+        return node1
+    else:
+
+        nodeDepths(data, depth(data))
+        if nodes[node1] >= nodes[node2]:
+            higher, lower = node1, node2
+        else:
+            higher, lower = node2, node1
+        
+        allChildren, currNode = [], lower
+        while (higher not in allChildren) and (higher != currNode):
+            parent = getParent(data, currNode)
+            pChildren = getAllChildren(data, parent, allChildren)
+            if higher not in allChildren:
+                currNode = parent
+        
+    return parent
+
 with open("sample.json") as f:
     data = json.load(f)
 
-print(getParent(data, "*"))
-
-##allChildren = []
-##getAllChildren(data, "europe", allChildren)
-##print(allChildren)
+print(generalize(data, "partial2", "full4"))
 
