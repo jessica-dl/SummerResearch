@@ -1,0 +1,24 @@
+{
+    "value":"*",
+    "children":[
+      {
+          "value":"partial1",
+          "children":[
+            { "value":"full1",
+                "children":[] },
+            { "value":"full2",
+                "children":[] }
+          ]
+       },
+       {
+           "value":"partial2",
+           "children":[
+             { "value":"full3",
+                 "children":[] },
+             { "value":"full4",
+                 "children":[] }
+           ]
+        }
+    ]
+}
+
