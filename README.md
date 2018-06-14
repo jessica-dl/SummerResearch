@@ -2,7 +2,7 @@
 
 To Do:
 
-- [ ] Comment code
+- [x] Comment code
 - [ ] Clean up code
    - [ ] Get rid of global variables 
    - [ ] See if there are extraneous functions
