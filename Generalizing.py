@@ -2,7 +2,10 @@ import json
 from pprint import pprint
 import itertools
 
-nDepths = dict()
+nDepths = dict() #figure out a way to get rid of global variables
+
+#take everything out of a tuple
+#change to distance between parent and lowest node in the tree
 
 def depth(data):
         
@@ -11,6 +14,7 @@ def depth(data):
         return 1 + max([-1] + list(map(depth, data['children'])))
     else:
         return 1
+
 
 def nodeDepths(data, currDepth):
 
@@ -23,6 +27,7 @@ def nodeDepths(data, currDepth):
                 pass;
             for child in currVal:
                 nodeDepths(child, currDepth - 1)
+
 
 def getAllChildren(data, node, allChildren):
 
@@ -46,6 +51,7 @@ def getAllChildren(data, node, allChildren):
                 for kid in kids:
                     getAllChildren(kid, node, allChildren)
 
+
 def getParent(data, node):
 
     nodeDepths(data, depth(data))
@@ -59,6 +65,7 @@ def getParent(data, node):
                 return val
         else: pass;
     return node  
+
 
 def generalize(data, node1, node2):
 
@@ -81,6 +88,7 @@ def generalize(data, node1, node2):
         
     return parent
 
+
 #https://stackoverflow.com/questions/45964423/generate-all-possible-combinations-of-elements-in-a-list
 def combinations(data):
     
@@ -93,25 +101,46 @@ def combinations(data):
         
     return combs
 
+def nodeDistance(data, node1, node2, gen):
+
+    nodeDepths(data, depth(data))
+    
+    node1D, node2D, parentD = nDepths[node1], nDepths[node2], nDepths[gen]
+
+    if node1D <= node2D:
+        dist = parentD - node1D
+    else:
+        dist = parentD - node2D
+
+    return dist
+
 def calculations(file):
     
     with open(file) as f:
         data = json.load(f)
 
-    nodeDepths(data, depth(data))
-    calcs = []
+    calcs, treeDepth = [], depth(data)
+    nodeDepths(data, treeDepth)
     
     for comb in combinations(data):
         genVal = generalize(data, comb[0], comb[1])
-        calcs.append((comb, genVal, nDepths[genVal], depth(data), depth(data)))
+        nodeDist = nodeDistance(data, comb[0], comb[1], genVal)
+        calcs.append((comb[0], comb[1], genVal, nodeDist, treeDepth, treeDepth))
 
     return calcs
 
+
 def main():
-    
-    print("postal_codes.json")
-    for row in calculations("postal_codes.json"):
-        print(row)
+
+    outfile = open("output.txt", "w")
+
+    for node1, node2, gen, dist, parentDepth, depth in calculations("postal_codes.json"):
+        
+        sepBy = ","
+        out = str(node1)+sepBy+str(node2)+sepBy+str(gen)+sepBy+str(dist)+sepBy+str(parentDepth)+sepBy+str(depth)+"\n"
+        outfile.write(out)
+        
+    outfile.close()
 
 if __name__ == "__main__":
     main()
