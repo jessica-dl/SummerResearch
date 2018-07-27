@@ -65,6 +65,9 @@ class Partition(object):
         """
         return len(self.member)
 
+    def __str__(self):
+        for mem in self.member:
+            return str(mem)
 
 def NCP(record):
     """
@@ -265,14 +268,20 @@ def can_split(partition):
     return True
 
 
-def anonymize(partition):
+def anonymize(partition, outfile):
     """
     Main procedure of top_down_greedy_anonymization.
     recursively partition groups until not allowable.
     """
     if can_split(partition) is False:
         RESULT.append(partition)
-        return
+
+        with open(outfile, "w") as rf:
+            for p in RESULT:
+                rf.write(str(p)[1:-1])
+                rf.write("\n")
+        
+        return 
     u, v = get_pair(partition)
     sub_partitions = distribute_record(u, v, partition)
     if len(sub_partitions[0]) < GL_K:
@@ -287,12 +296,12 @@ def anonymize(partition):
     if p_sum != c_sum:
         pdb.set_trace()
     for sub_partition in sub_partitions:
-        anonymize(sub_partition)
+        anonymize(sub_partition, outfile)
 
 
 def init(att_trees, data, k, QI_num=-1):
     """
-    reset all gloabl variables
+    reset all global variables
     """
     global GL_K, RESULT, QI_LEN, ATT_TREES, QI_RANGE, IS_CAT
     ATT_TREES = att_trees
@@ -328,8 +337,8 @@ def Top_Down_Greedy_Anonymization(att_trees, data, k, QI_num=-1):
             middle.append('*')
     whole_partition = Partition(data, middle)
     start_time = time.time()
-    anonymize(whole_partition)
-    rtime = float(time.time() - start_time)
+    anonymize(whole_partition, "resultfile.csv")
+    rtime = float(time.time() - start_time)    
     ncp = 0.0
     dp = 0.0
     for sub_partition in RESULT:
@@ -357,3 +366,4 @@ def Top_Down_Greedy_Anonymization(att_trees, data, k, QI_num=-1):
         print "Total running time = %.2f" % rtime
         # pdb.set_trace()
     return (result, (ncp, rtime))
+
