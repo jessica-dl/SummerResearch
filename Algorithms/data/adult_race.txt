@@ -1,0 +1,5 @@
+White;*
+Black;*
+Other;*
+Asian-Pac-Islander;*
+Amer-Indian-Eskimo;*

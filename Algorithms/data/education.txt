@@ -1,0 +1,28 @@
+[
+("*", "Elementary"),
+("Elementary", "1st-4th"),
+("Elementary", "5th-6th"),
+
+("*", "Middle school"),
+("Middle school", "7th-8th"),
+
+
+("*", "High school"),
+("High school", "9th"),
+("High school", "10th"),
+("High school", "11th"),
+("High school", "12th"),
+("High school", "HS-grad"),
+
+("*", "Post-secondary"),
+("Post-secondary", "Bachelors"),
+("Post-secondary", "Some-college"),
+("Post-secondary", "Doctorate"),
+("Post-secondary", "Prof-school"),
+("Post-secondary", "Masters"),
+
+("*", "Other"),
+("Other", "Assoc-voc"),
+("Other", "Assoc-acdm")
+
+]
