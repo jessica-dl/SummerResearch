@@ -1,0 +1,8 @@
+ulcer;stomach-disease;digestive&circulatory-system;*
+pylorospasm;stomach-disease;digestive&circulatory-system;*
+hypertension;artery-disease;digestive&circulatory-system;*
+hypotension;artery-disease;digestive&circulatory-system;*
+sinus;headache;muscular-and-endocrine;*
+migraine;headache;muscular-and-endocrine;*
+tendinitis;musculoskeletal;muscular-and-endocrine;*
+osteoarthritis;musculoskeletal;muscular-and-endocrine;*

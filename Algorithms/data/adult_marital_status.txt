@@ -1,7 +1,7 @@
-Never-married;* 
+Never-married;Not-Married;* 
 Married-civ-spouse;Married;* 
 Married-AF-spouse;Married;* 
-Divorced;leave;* 
-Separated;leave;* 
-Widowed;alone;* 
-Married-spouse-absent;alone;* 
+Divorced;Not-Married;* 
+Separated;Not-Married;* 
+Widowed;Not-Married;* 
+Married-spouse-absent;Not-Married;* 

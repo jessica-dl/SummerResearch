@@ -1,0 +1,7 @@
+QC;Central-Canada;*
+ON;Central-Canada;*
+AB;Prairies;*
+MB;Prairies;*
+NS;Atlantic-Canada;*
+NB;Atlantic-Canada;*
+BC;West-Coast;*

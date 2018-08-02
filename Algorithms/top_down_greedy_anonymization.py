@@ -25,7 +25,6 @@ Main module of top down greedy anonymizaiton algorithm
 # coding=utf-8
 
 import pdb
-from models.numrange import NumRange
 from utils.utility import cmp_str, get_num_list_from_str
 import operator
 import random
@@ -39,7 +38,6 @@ RESULT = []
 ATT_TREES = []
 QI_RANGE = []
 ROUNDS = 3
-IS_CAT = []
 
 
 class Partition(object):
@@ -52,17 +50,15 @@ class Partition(object):
     """
 
     def __init__(self, data, middle):
-        """
-        initialize with data and middle
-        """
+        """ Initialize with data and middle """
+        
         self.can_split = True
         self.member = data[:]
         self.middle = middle[:]
 
     def __len__(self):
-        """
-        return the number of records in partition
-        """
+        """ return the number of records in partition """
+        
         return len(self.member)
 
     def __str__(self):
@@ -70,38 +66,25 @@ class Partition(object):
             return str(mem)
 
 def NCP(record):
-    """
-    compute Certainty Penalty of records
-    """
+    """ Compute Certainty Penalty of records """
+    
     record_ncp = 0.0
     for i in range(QI_LEN):
-        if IS_CAT[i] is False:
-            value_ncp = 0
-            try:
-                float(record[i])
-            except ValueError:
-                split_number = record[i].split(',')
-                value_ncp = float(split_number[1]) - float(split_number[0])
-            value_ncp = value_ncp * 1.0 / QI_RANGE[i]
-            record_ncp += value_ncp
-        else:
-            record_ncp += len(ATT_TREES[i][record[i]]) * 1.0 / QI_RANGE[i]
+        record_ncp += len(ATT_TREES[i][record[i]]) * 1.0 / QI_RANGE[i]
     return record_ncp
 
 
 def NCP_dis(record1, record2):
-    """
-    use the NCP of generalization record1 and record2 as distance
-    """
+    """ Use the NCP of generalization record1 and record2 as distance """
+    
     mid = middle_record(record1, record2)
     return NCP(mid), mid
 
 
 def NCP_dis_merge(partition, addition_set):
-    """
-    merge addition_set to current partition,
-    update current partition.middle
-    """
+    """ Merge addition_set to current partition
+        and update current partition.middle """
+    
     mid = middle_group(addition_set)
     mid = middle_record(mid, partition.middle)
     return (len(addition_set) + len(partition)) * NCP(mid), mid
@@ -117,30 +100,17 @@ def NCP_dis_group(record, partition):
 
 
 def middle_record(record1, record2):
-    """
-    get the generalization result of record1 and record2
-    """
+    """ Get the generalization result of record1 and record2"""
+    
     mid = []
     for i in range(QI_LEN):
-        if IS_CAT[i] is False:
-            split_number = []
-            split_number.extend(get_num_list_from_str(record1[i]))
-            split_number.extend(get_num_list_from_str(record2[i]))
-            split_number.sort(cmp=cmp_str)
-            # avoid 2,2 problem
-            if split_number[0] == split_number[-1]:
-                mid.append(split_number[0])
-            else:
-                mid.append(split_number[0] + ',' + split_number[-1])
-        else:
-            mid.append(LCA(record1[i], record2[i], i))
+        mid.append(LCA(record1[i], record2[i], i))
     return mid
 
 
 def middle_group(group_set):
-    """
-    get the generalization result of the group
-    """
+    """ Get the generalization result of the group """
+    
     len_group_set = len(group_set)
     mid = group_set[0]
     for i in range(1, len_group_set):
@@ -149,9 +119,8 @@ def middle_group(group_set):
 
 
 def LCA(u, v, index):
-    """
-    get lowest common ancestor of u, v on generalization hierarchy (index)
-    """
+    """ Get lowest common ancestor of u, v from generalization hierarchy """
+    
     gen_tree = ATT_TREES[index]
     # don't forget to add themselves (other the level will be higher)
     u_parent = list(gen_tree[u].parent)
@@ -173,8 +142,8 @@ def LCA(u, v, index):
 def get_pair(partition):
     """
     To get max distance pair in partition, we need O(n^2) running time.
-    The author proposed a heuristic method: random pick u and get max_dis(u, v)
-    with O(n) running tiem; then pick max(v, u2)...after run ROUNDS times.
+    The author proposed a heuristic method: randomly pick u and get max_dis(u, v)
+    with O(n) running time; then pick max(v, u2)...after run ROUNDS times.
     the dis(u, v) is nearly max.
     """
     len_partition = len(partition)
@@ -196,10 +165,9 @@ def get_pair(partition):
 
 
 def distribute_record(u, v, partition):
-    """
-    Distribute records based on NCP distance.
-    records will be assigned to nearer group.
-    """
+    """ Distribute records based on NCP distance.
+        Records will be assigned to nearer group. """
+    
     record_u = partition.member[u][:]
     record_v = partition.member[v][:]
     u_partition = [record_u]
@@ -224,6 +192,7 @@ def balance(sub_partitions, index):
     The algorithm will choose one of them with minimal NCP
     index store the sub_partition with less than k records
     """
+    
     less = sub_partitions.pop(index)
     more = sub_partitions.pop()
     all_length = len(less) + len(more)
@@ -258,9 +227,8 @@ def balance(sub_partitions, index):
 
 
 def can_split(partition):
-    """
-    check if partition can be split any furthur
-    """
+    """ Check if partition can be split any furthur """
+    
     if partition.can_split is False:
         return False
     if len(partition) < 2 * GL_K:
@@ -268,19 +236,14 @@ def can_split(partition):
     return True
 
 
-def anonymize(partition, outfile):
+def anonymize(partition):
     """
     Main procedure of top_down_greedy_anonymization.
-    recursively partition groups until not allowable.
+    Recursively partition groups until it's no longer possible.
     """
+    
     if can_split(partition) is False:
-        RESULT.append(partition)
-
-        with open(outfile, "w") as rf:
-            for p in RESULT:
-                rf.write(str(p)[1:-1])
-                rf.write("\n")
-        
+        RESULT.append(partition)      
         return 
     u, v = get_pair(partition)
     sub_partitions = distribute_record(u, v, partition)
@@ -288,7 +251,6 @@ def anonymize(partition, outfile):
         balance(sub_partitions, 0)
     elif len(sub_partitions[1]) < GL_K:
         balance(sub_partitions, 1)
-    # watch dog
     p_sum = len(partition)
     c_sum = 0
     for sub_partition in sub_partitions:
@@ -296,14 +258,13 @@ def anonymize(partition, outfile):
     if p_sum != c_sum:
         pdb.set_trace()
     for sub_partition in sub_partitions:
-        anonymize(sub_partition, outfile)
+        anonymize(sub_partition)
 
 
 def init(att_trees, data, k, QI_num=-1):
-    """
-    reset all global variables
-    """
-    global GL_K, RESULT, QI_LEN, ATT_TREES, QI_RANGE, IS_CAT
+    """ Reset all global variables """
+    
+    global GL_K, RESULT, QI_LEN, ATT_TREES, QI_RANGE
     ATT_TREES = att_trees
     if QI_num <= 0:
         QI_LEN = len(data[0]) - 1
@@ -312,33 +273,23 @@ def init(att_trees, data, k, QI_num=-1):
     GL_K = k
     RESULT = []
     QI_RANGE = []
-    IS_CAT = []
-    for i in range(QI_LEN):
-        if isinstance(ATT_TREES[i], NumRange):
-            IS_CAT.append(False)
-        else:
-            IS_CAT.append(True)
 
 
 def Top_Down_Greedy_Anonymization(att_trees, data, k, QI_num=-1):
-    """
-    Top Down Greedy Anonymization is a heuristic algorithm
-    for relational dataset with numeric and categorical attbitues
-    """
+    """ Top Down Greedy Anonymization is a heuristic algorithm
+        for relational dataset with numeric and categorical attbitues """
+    
     init(att_trees, data, k, QI_num)
     result = []
     middle = []
     for i in range(QI_LEN):
-        if IS_CAT[i] is False:
-            QI_RANGE.append(len(ATT_TREES[i]))
-            middle.append(ATT_TREES[i].value)
-        else:
-            QI_RANGE.append(len(ATT_TREES[i]['*']))
-            middle.append('*')
+        QI_RANGE.append(len(ATT_TREES[i]['*']))
+        middle.append('*')
     whole_partition = Partition(data, middle)
     start_time = time.time()
-    anonymize(whole_partition, "resultfile.csv")
-    rtime = float(time.time() - start_time)    
+    anonymize(whole_partition)
+    rtime = float(time.time() - start_time)
+    
     ncp = 0.0
     dp = 0.0
     for sub_partition in RESULT:
@@ -366,4 +317,3 @@ def Top_Down_Greedy_Anonymization(att_trees, data, k, QI_num=-1):
         print "Total running time = %.2f" % rtime
         # pdb.set_trace()
     return (result, (ncp, rtime))
-

@@ -1,0 +1,16 @@
+1st-4th;Elementary;*
+5th-6th;Elementary;*
+7th-8th;Middle-School;*
+9th;High-School;*
+10th;High-School;*
+11th;High-School;*
+12th;High-School;*
+HS-grad;High-School;*
+Bachelors;Post-Secondary;*
+Some-college;Post-Secondary;*
+Doctorate;Post-Secondary;*
+Prof-school;Post-Secondary;*
+Masters;Post-Secondary;*
+Preschool;Other;*
+Assoc-voc;Other;*
+Assoc-acdm;Other;*
