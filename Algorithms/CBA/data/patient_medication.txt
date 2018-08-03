@@ -1,0 +1,8 @@
+ibuprofen;NSAID;analgesic;*
+adapin;NSAID;analgesic;*
+naproxen;NSAID;analgesic;*
+dolex;acetaminophen;analgesic;*
+tylenol;acetaminophen;analgesic;*
+paracetamol;acetaminophen;analgesic;*
+digoxin;inotrope;anesthetics;*
+diazepam;benzodiazepine;anesthetics;*

@@ -1,0 +1,17 @@
+Edits to Clustering Based K-Anonymization by Jessica de Leeuw
+
+1. Added module read_patient_data.py
+   Reads the patient dataset. 
+
+2. Edited read_adult_data.py and read_informs_data.py
+   They use generalization hierarchies to generalize numerical attributes
+   instead of generalizing them in ranges.
+   
+   This included removing a module NumRange in modules, and completely changing 
+   much of the code used to generalize numeric values.
+
+3. I added K_CONST as a global variable.
+   It was previously hard-coded in each function, which made changing it much more difficult.
+
+4. I removed the iteration through varying sizes of the dataset.
+   It now simply creates a public table from the full dataset. 
